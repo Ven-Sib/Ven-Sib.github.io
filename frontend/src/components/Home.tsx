@@ -14,7 +14,7 @@ function Photo() {
         {missing ? (
           <div className="w-full h-full grid place-items-center h-display text-7xl text-aqua/70">VS</div>
         ) : (
-          <img src="/me.jpg" alt={profile.name} onError={() => setMissing(true)} className="w-full h-full object-cover" />
+          <img src="/me.jpeg" alt={profile.name} onError={() => setMissing(true)} className="w-full h-full object-cover" />
         )}
       </div>
     </div>
