@@ -1,0 +1,19 @@
+name: Sync postings (LeetCode / YouTube)
+
+# Runs every hour. It also wakes the free Render server if it is asleep.
+on:
+  schedule:
+    - cron: "15 * * * *"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the API
+        env:
+          API_URL: ${{ vars.API_URL }}
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          curl --fail-with-body -sS -m 150 --retry 3 --retry-delay 15 --retry-all-errors \
+            -X POST "$API_URL/api/sync" -H "X-Admin-Token: $ADMIN_TOKEN"
