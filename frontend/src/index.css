@@ -108,3 +108,12 @@ body {
 @media (max-width: 800px) {
   .site-nav-tabs { grid-column: 1 / -1; grid-row: 2; justify-self: stretch; }
 }
+
+/* ---------- Photo gallery arrows ---------- */
+.gal-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 2rem; height: 2rem; display: grid; place-items: center;
+  border-radius: 999px; background: rgba(18,21,24,.65); border: 1px solid rgba(157,176,203,.25); color: var(--color-ink);
+  font-size: 1.25rem; line-height: 1; opacity: 0; transition: opacity .2s, background .2s; }
+.group:hover .gal-arrow, .gal-arrow:focus-visible { opacity: 1; }
+.fixed .gal-arrow { opacity: 1; }
+.gal-arrow:hover { background: rgba(143,195,198,.3); }
+@media (hover: none) { .gal-arrow { opacity: .9; } }
