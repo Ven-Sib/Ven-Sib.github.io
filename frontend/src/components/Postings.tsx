@@ -53,10 +53,32 @@ function VideoCard({ p }: { p: Post }) {
       <div className="p-5">
         <h3 className="font-medium leading-snug">{p.title}</h3>
         {p.body && <CollapsibleText text={p.body} />}
-        <Tags p={p} />
+        <CollapsibleTags p={p} />
         <p className="mt-3 font-mono text-[11px] text-mute">{timeAgo(p.created_at)}</p>
       </div>
     </article>
+  );
+}
+
+/** Shows the first 2 tags; the rest hide behind a "+N more" chip. */
+function CollapsibleTags({ p }: { p: Post }) {
+  const t = tagsOf(p);
+  const [open, setOpen] = useState(false);
+  if (!t.length) return null;
+  const LIMIT = 2;
+  const hidden = t.length - LIMIT;
+  const shown = open ? t : t.slice(0, LIMIT);
+  return (
+    <ul className="mt-3 flex flex-wrap gap-1.5">
+      {shown.map((x) => <li key={x} className="chip">#{x}</li>)}
+      {hidden > 0 && (
+        <li>
+          <button onClick={() => setOpen(!open)} aria-expanded={open} className="chip chip-btn">
+            {open ? 'Show fewer' : `+${hidden} more`}
+          </button>
+        </li>
+      )}
+    </ul>
   );
 }
 

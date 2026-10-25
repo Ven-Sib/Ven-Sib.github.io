@@ -209,16 +209,23 @@ export const projects: Project[] = [
     links: [{ label: 'GitHub', url: 'https://github.com/Ven-Sib/Registration_system', primary: true }],
   },
   {
-    slug: 'movie-site',
-    title: 'Movie Website',
+    slug: 'movie-explorer',
+    title: 'Movie Explorer',
     org: 'Personal project',
     period: '2025',
     status: 'Shipped',
-    summary: 'A movie website built with JavaScript.',
-    bullets: [], // add a line or two about what it does, e.g. what data it shows and how
-    stack: ['JavaScript'],
+    summary: 'A web app for searching any movie and viewing its poster, rating, original language and release date, powered by the TMDb API.',
+    bullets: [
+      'Type a movie title and get instant results as dynamic movie cards.',
+      'Fetches real-time movie data from the TMDb REST API using Axios.',
+      'Responsive UI built with React and Tailwind CSS, deployed to GitHub Pages.',
+    ],
+    stack: ['React', 'Tailwind CSS', 'Axios', 'TMDb API', 'Vite'],
     categories: [],
-    links: [{ label: 'GitHub', url: 'https://github.com/Ven-Sib/your-repository', primary: true }],
+    links: [
+      { label: 'Live site', url: 'https://ven-sib.github.io/your-repository/', primary: true },
+      { label: 'GitHub', url: 'https://github.com/Ven-Sib/your-repository' },
+    ],
   },
   {
     slug: 'clip-search',
