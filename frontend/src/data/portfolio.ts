@@ -209,6 +209,18 @@ export const projects: Project[] = [
     links: [{ label: 'GitHub', url: 'https://github.com/Ven-Sib/Registration_system', primary: true }],
   },
   {
+    slug: 'movie-site',
+    title: 'Movie Website',
+    org: 'Personal project',
+    period: '2025',
+    status: 'Shipped',
+    summary: 'A movie website built with JavaScript.',
+    bullets: [], // add a line or two about what it does, e.g. what data it shows and how
+    stack: ['JavaScript'],
+    categories: [],
+    links: [{ label: 'GitHub', url: 'https://github.com/Ven-Sib/your-repository', primary: true }],
+  },
+  {
     slug: 'clip-search',
     title: 'CLIP Image Search Engine',
     org: 'Personal project',
@@ -283,7 +295,7 @@ export const otherSkills = ['TypeScript', 'JavaScript', 'React', 'Tailwind CSS',
 export const education = {
   school: 'Grambling State University',
   degree: 'B.S. Computer Science',
-  detail: 'GPA 3.7 · President’s List · Honors Scholar',
+  detail: 'GPA 3.9 · President’s List · Honors Scholar',
   expected: 'Expected Dec 2027',
   coursework: [
     'Cyber Security',

@@ -160,3 +160,10 @@ body {
   .spot-bar { animation: none; width: 0; } .spot-dot, .sim-tag i, .vline.lit { animation: none; }
   .spot-slide, .vlog-line.new { animation: none; }
 }
+
+/* ---------- Back button ---------- */
+.back-btn { display: inline-flex; align-items: center; gap: .5rem; padding: .4rem .95rem; border-radius: 999px;
+  border: 1px solid var(--color-line); background: rgba(18,21,24,.45); color: var(--color-ink); font-size: .85rem;
+  transition: border-color .2s, transform .2s; }
+.back-btn:hover { border-color: var(--color-aqua); transform: translateX(-2px); }
+.back-btn:focus-visible { outline: 2px solid var(--color-aqua); outline-offset: 2px; }

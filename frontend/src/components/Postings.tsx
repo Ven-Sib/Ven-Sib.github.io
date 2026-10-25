@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { parseDate, timeAgo, type Post } from '../lib/api';
 import { usePosts } from '../lib/usePosts';
 import { youtubeId } from '../lib/youtube';
@@ -52,11 +52,38 @@ function VideoCard({ p }: { p: Post }) {
       )}
       <div className="p-5">
         <h3 className="font-medium leading-snug">{p.title}</h3>
-        {p.body && <p className="mt-2 text-sm text-mute leading-relaxed whitespace-pre-line">{p.body}</p>}
+        {p.body && <CollapsibleText text={p.body} />}
         <Tags p={p} />
         <p className="mt-3 font-mono text-[11px] text-mute">{timeAgo(p.created_at)}</p>
       </div>
     </article>
+  );
+}
+
+/** Shows ~2 lines; "Read more" appears only if the text is actually longer. */
+function CollapsibleText({ text }: { text: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const [open, setOpen] = useState(false);
+  const [overflows, setOverflows] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const check = () => { if (!open) setOverflows(el.scrollHeight > el.clientHeight + 1); };
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, [text, open]);
+
+  return (
+    <div className="mt-2">
+      <p ref={ref} className={`text-sm text-mute leading-relaxed whitespace-pre-line ${open ? '' : 'line-clamp-2'}`}>{text}</p>
+      {(overflows || open) && (
+        <button onClick={() => setOpen(!open)} aria-expanded={open} className="mt-1 text-xs text-aqua hover:underline">
+          {open ? 'Show less' : 'Read more'}
+        </button>
+      )}
+    </div>
   );
 }
 const VideoGrid = ({ posts }: { posts: Post[] }) => (

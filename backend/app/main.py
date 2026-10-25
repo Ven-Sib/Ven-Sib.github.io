@@ -1,8 +1,11 @@
 import asyncio
+import secrets
+import time
+from collections import defaultdict, deque
 from contextlib import asynccontextmanager
 from typing import Optional
 
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Session, select
 
@@ -40,9 +43,39 @@ app.add_middleware(
 )
 
 
-def require_admin(x_admin_token: Optional[str] = Header(default=None)):
-    if x_admin_token != settings.admin_token:
+# --- admin protection -------------------------------------------------------
+# The real protection is a long random ADMIN_TOKEN, compared in constant time.
+# On top of that, repeated wrong guesses from one address are slowed down.
+MAX_FAILS = 8        # wrong tokens allowed ...
+FAIL_WINDOW = 600    # ... per 10 minutes, per address
+_fails: dict[str, deque] = defaultdict(deque)
+
+
+def _client_ip(request: Request) -> str:
+    fwd = request.headers.get("x-forwarded-for")
+    if fwd:  # the last entry is the one added by the host's own proxy
+        return fwd.split(",")[-1].strip()
+    return request.client.host if request.client else "unknown"
+
+
+def require_admin(request: Request, x_admin_token: Optional[str] = Header(default=None)):
+    ip = _client_ip(request)
+    now = time.monotonic()
+    q = _fails[ip]
+    while q and now - q[0] > FAIL_WINDOW:
+        q.popleft()
+    if len(q) >= MAX_FAILS:
+        raise HTTPException(status_code=429, detail="Too many failed attempts. Try again in a few minutes.")
+    supplied = (x_admin_token or "").encode()
+    if not secrets.compare_digest(supplied, settings.admin_token.encode()):
+        q.append(now)
         raise HTTPException(status_code=401, detail="Invalid admin token")
+
+
+@app.post("/api/admin/verify", dependencies=[Depends(require_admin)])
+def admin_verify():
+    """Used by the admin lock screen: 200 only if the token is correct."""
+    return {"ok": True}
 
 
 @app.get("/api/health")
