@@ -2,21 +2,19 @@ import { useState } from 'react';
 import { categories, focus, profile } from '../data/portfolio';
 import { usePosts } from '../lib/usePosts';
 import { timeAgo } from '../lib/api';
+import Spotlight from './Spotlight';
 
 const KIND_LABEL: Record<string, string> = { video: 'Video', leetcode: 'LeetCode', text: 'Note', link: 'Article' };
 
 function Photo() {
   const [missing, setMissing] = useState(false);
   return (
-    <div className="relative mx-auto w-48 sm:w-64 md:w-80 shrink-0">
-      <div className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-aqua/25 via-transparent to-steel/20 blur-xl" aria-hidden />
-      <div className="glass relative !rounded-[1.75rem] overflow-hidden aspect-[4/5]">
-        {missing ? (
-          <div className="w-full h-full grid place-items-center h-display text-7xl text-aqua/70">VS</div>
-        ) : (
-          <img src="/me.jpeg" alt={profile.name} onError={() => setMissing(true)} className="w-full h-full object-cover" />
-        )}
-      </div>
+    <div className="glass shrink-0 w-28 sm:w-36 lg:w-40 aspect-[4/5] !rounded-2xl overflow-hidden">
+      {missing ? (
+        <div className="w-full h-full grid place-items-center h-display text-5xl text-aqua/70">VS</div>
+      ) : (
+        <img src={`${import.meta.env.BASE_URL}me.jpeg`} alt={profile.name} onError={() => setMissing(true)} className="w-full h-full object-cover" />
+      )}
     </div>
   );
 }
@@ -26,29 +24,36 @@ export default function Home() {
   const latest = (posts ?? []).slice(0, 4);
 
   return (
-    <div className="page">
-      <section className="mx-auto max-w-6xl px-5 pt-40 md:pt-36 pb-20">
-        <div className="flex flex-col-reverse md:flex-row items-center gap-12 md:gap-16">
-          <div className="flex-1">
-            <p className="eyebrow mb-6">{profile.role}</p>
-            <h1 className="h-display text-4xl sm:text-5xl lg:text-6xl leading-[1.08]">{profile.headline}</h1>
-            <p className="mt-6 max-w-xl text-lg text-mute leading-relaxed">{profile.intro}</p>
-            <div className="mt-7 flex flex-wrap gap-2">
-              {categories.map((c) => <span key={c} className="chip">{c}</span>)}
-            </div>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <a href="#/projects" className="btn btn-primary">View projects</a>
-              <a href="#/postings" className="btn btn-ghost">What I'm learning</a>
-              <a href={profile.github} target="_blank" rel="noreferrer" className="btn btn-ghost">GitHub</a>
-            </div>
-          </div>
+    <div className="page mx-auto max-w-6xl px-5 pt-36 lg:pt-32 pb-16 grid gap-x-10 gap-y-16 lg:grid-cols-[minmax(0,1fr)_20.5rem]">
+      {/* Hero */}
+      <section className="lg:col-start-1">
+        <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 items-start">
           <Photo />
+          <div>
+            <p className="eyebrow mb-4">{profile.role}</p>
+            <h1 className="h-display text-3xl sm:text-4xl xl:text-[2.6rem] leading-[1.12]">{profile.headline}</h1>
+            <p className="mt-5 max-w-xl text-mute leading-relaxed">{profile.intro}</p>
+          </div>
+        </div>
+        <div className="mt-7 flex flex-wrap gap-2">
+          {categories.map((c) => <span key={c} className="chip">{c}</span>)}
+        </div>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <a href="#/projects" className="btn btn-primary">View projects</a>
+          <a href="#/about" className="btn btn-ghost">How I work</a>
+          <a href="#/postings" className="btn btn-ghost">What I'm learning</a>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 pb-20">
+      {/* Floating spotlight (sticky on desktop, in-flow on phones) */}
+      <div className="lg:col-start-2 lg:row-start-1 lg:row-span-3 lg:self-start lg:sticky lg:top-24">
+        <Spotlight />
+      </div>
+
+      {/* Focus areas */}
+      <section className="lg:col-start-1">
         <p className="eyebrow mb-3">What I work on</p>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {focus.map((f, i) => (
             <a key={f.title} href="#/about" className="glass glass-hover p-5 block">
               <span className="font-mono text-xs text-mute">0{i + 1}</span>
@@ -59,7 +64,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 pb-24">
+      {/* Latest postings */}
+      <section className="lg:col-start-1">
         <div className="flex items-end justify-between mb-5">
           <div>
             <p className="eyebrow mb-2">Latest from my postings</p>
